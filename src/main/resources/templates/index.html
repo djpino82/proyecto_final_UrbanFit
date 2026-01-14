@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+
+    <title>UrbanFit</title>
+</head>
+
+<body>
+
+    <!--- Nav -->
+
+    <nav class="navbar navbar-expand-sm nav-bg py-2">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/logo_UrbanFit.png}" alt="Logo UrbanFit" width="75"
+                    height="75" class="d-inline-block align-text-top"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#quienes">Quiénes Somos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-info rounded-1" href="#">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--- Header -->
+    <header class="header">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="text-container p-5 text-white">
+                    <h1 class="display-3 fw-bold text-capitalize ">
+                        ¡Tu mejor versión!
+                    </h1>
+                    <p class="lead py-2">
+                        "En UrbanFit creemos que cada día es una nueva oportunidad para crecer. No importa tu edad
+                        ni tu
+                        nivel, lo importante es dar el primer paso. Nuestro gimnasio está diseñado para inspirarte,
+                        acompañarte y ayudarte a alcanzar tus metas con energía y confianza."
+                    </p>
+                    <a class="btn btn-registro text-uppercase py-2 px-4" href="#">Registrarse</a>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="imagen-container px-4">
+                    <img th:src="@{/images/imagen_header.jpg}" alt="Barra de harterofilia en el suelo" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <!--- Quiénes somos -->
+
+    <section id="quienes" class="quienes py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img th:src="@{/images/quienes_somos.jpg}" alt="Mujer haciendo abdominales" class="img-fluid">
+                </div>
+                <div class="col-md-6 py-5 ps-5">
+                    <p class="lead text-uppercase fw-medium text-titulo">Quiénes somos</p>
+                    <h2 class="text-capitalize fw-bold">
+                        Bienvenido a UrbanFit
+                    </h2>
+                    <p class="about">
+                        UrbanFit es más que un gimnasio: somos una comunidad que inspira a cada persona a superar sus
+                        límites y descubrir su mejor versión. Creemos que nunca es tarde para empezar y que cada día
+                        trae una nueva oportunidad para crecer.
+                    <p class="about">
+                        Nuestro equipo de profesionales y nuestras instalaciones modernas están pensadas para
+                        acompañarte en tu camino hacia la salud y el bienestar. Aquí entrenas tu cuerpo, fortaleces tu
+                        confianza y disfrutas de un ambiente motivador que te impulsa a dar lo mejor de ti.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--- Ventajas UrbanFit -->
+    <section class="ventajas py-5">
+        <div class="container">
+            <p class="lead text-uppercase fw-medium text-titulo text-center">Ventajas UrbanFit</p>
+            <h2 class="text-capitalize fw-bold text-center text-light">Siempre Contigo</h2>
+        </div>
+
+        <div class="row all-card g-4 px-4 pt-5">
+
+            <div class="col-md-4 d-flex">
+                <div class="card border-0 h-100">
+                    <img th:src="@{/images/sin_permanencia.jpg}" class="card-img-top img-fluid" alt="Sin permanencia">
+                    <div class="card-body">
+                        <h5 class="card-title">Sin Permanencia</h5>
+                        <p class="card-text">Sin contratos largos ni compromisos de permanencia. Tú decides cuánto
+                            tiempo quedarte y cómo aprovechar nuestros servicios, porque creemos que la motivación nace
+                            de la elección, no de la obligación.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card border-0 h-100">
+                    <img th:src="@{/images/abiertos_365.jpg}" class="card-img-top img-fluid" alt="Abierto 365 días">
+                    <div class="card-body">
+                        <h5 class="card-title">Abierto 365 días</h5>
+                        <p class="card-text">Abrimos los 365 días del año para que entrenes cuando quieras. Porque tu
+                            compromiso no descansa, y nosotros tampoco.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card border-0 h-100">
+                    <img th:src="@{/images/horarios.jpg}" class="card-img-top img-fluid"
+                        alt="Amplitud horarios durante todo el día">
+                    <div class="card-body">
+                        <h5 class="card-title">Amplitud Horaria</h5>
+                        <p class="card-text">Contamos con una amplia franja horaria para que adaptes tus sesiones a tu
+                            ritmo de vida. Mañana, tarde o noche, siempre encontrarás el momento perfecto para dar lo
+                            mejor de ti.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--- Footer -->
+
+    <footer class="bg-footer text-light py-2">
+        <div class="container text-center">
+
+            <p class="mb-1">© 2025 UrbanFit. Todos los derechos reservados.</p>
+
+            <div class="small">
+                <a href="#" class="text-light text-decoration-none me-3">Aviso Legal</a>
+                <a href="#" class="text-light text-decoration-none me-3">Política de Privacidad</a>
+                <a href="#" class="text-light text-decoration-none">Política de Cookies</a>
+            </div>
+
+        </div>
+    </footer>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
