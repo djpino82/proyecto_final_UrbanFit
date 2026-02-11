@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Define un fragmento de contenido dinámico -->
+<div th:fragment="contenidoPerfil" class="mt-4">
+
+    <h2 class="h3 mb-4">Mi Perfil</h2>
+
+    <!-- Mensaje de actualización por ejemplo perfil actualizado correctamente -->
+    <div th:if="${mensaje}" id="mensajeExito" class="alert alert-success" th:text="${mensaje}"></div>
+
+    <form th:action="@{/cliente/perfil}" th:object="${usuario}" method="post" class="row g-3">
+
+        <!-- Nombre -->
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" th:field="*{nombre}" class="form-control" id="nombre" required>
+        </div>
+
+        <!-- Apellidos -->
+        <div class="col-md-6">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input type="text" th:field="*{apellidos}" class="form-control" id="apellidos" required>
+        </div>
+
+        <!-- DNI (solo lectura - readonly) -->
+        <div class="col-md-6">
+            <label for="dni" class="form-label">DNI</label>
+            <input type="text" th:field="*{dni}" class="form-control" id="dni" readonly>
+        </div>
+
+        <!-- Email (solo lectura) -->
+        <div class="col-md-6">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control" id="email" readonly>
+        </div>
+
+        <!-- Contraseña (solo lectura, asteriscos). Para futuras implementación de form cambio de contraseña, se debe de cambiar -->
+        <div class="col-md-6">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" th:value="'******'" class="form-control" id="password" readonly>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="col-md-6">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" th:field="*{telefono}" class="form-control" id="telefono">
+        </div>
+
+        <!-- Dirección -->
+        <div class="col-md-12">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" th:field="*{direccion}" class="form-control" id="direccion">
+        </div>
+
+        <!-- Código Postal -->
+        <div class="col-md-6">
+            <label for="codigo_postal" class="form-label">Código Postal</label>
+            <input type="text" th:field="*{codigoPostal}" class="form-control" id="codigo_postal">
+        </div>
+
+        <!-- Localidad -->
+        <div class="col-md-6">
+            <label for="localidad" class="form-label">Localidad</label>
+            <input type="text" th:field="*{localidad}" class="form-control" id="localidad">
+        </div>
+
+        <!-- Fecha de nacimiento -->
+        <div class="col-md-6">
+            <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" th:field="*{fechaNacimiento}" class="form-control" id="fecha_nacimiento">
+        </div>
+
+        <!-- Estado (solo lectura) -->
+        <div class="col-md-6">
+            <label for="estado" class="form-label">Estado</label>
+            <input type="text" th:value="${usuario.estado ? 'Activo' : 'Inactivo'}" class="form-control" readonly>
+        </div>
+
+        <!-- Fecha de pago (solo lectura) -->
+        <div class="col-md-6">
+            <label for="fecha_pago" class="form-label">Fecha de Pago</label>
+            <input type="date" th:field="*{fechaPago}" class="form-control" id="fecha_pago" readonly>
+        </div>
+
+        <!-- Botón Guardar -->
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-urbanfit">Actualizar Perfil</button>
+        </div>
+
+    </form>
+</div>
+
+<
+
+</body>
+</html>

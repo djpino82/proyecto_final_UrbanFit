@@ -204,6 +204,18 @@ body.pagina-horarios {
     color: #070707;
 }
 
+/* Evita que los horarios se dividan en varias líneas */
+body.pagina-horarios .table td {
+    white-space: nowrap; /* texto en una sola línea */
+    font-size: 0.9rem;
+}
+
+body.pagina-horarios .table td:first-child,
+body.pagina-horarios .table th:first-child {
+    font-weight: bold;      /* pone en negrita */
+    color: #070707;         /* opcional: color más oscuro */
+}
+
 /**************************************************************/
 /* Estilos página Dashboard Usuario, Administrador y Monitor */
 
@@ -271,4 +283,14 @@ body.pagina-contacto h3 {
 .social-iconos a:hover .fa-whatsapp {
     color: #25D366;
     /* Verde WhatsApp */
+}
+
+/* Mensaje de bienvenida básico */
+.bienvenida {
+    font-family: "Catamaran", sans-serif;
+    font-size: 1.4rem;
+    color: #f09537;       /* color corporativo */
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    
 }

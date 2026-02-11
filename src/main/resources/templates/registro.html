@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <title>Registro</title>
+</head>
+
+<body class="pagina-registro">
+
+    <!--- Nav -->
+
+    <nav class="navbar navbar-expand-sm nav-bg py-2">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}"><img th:src="@{/images/logo_UrbanFit.png}" alt="Logo UrbanFit" width="75" height="75"
+                    class="d-inline-block align-text-top"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/#quienes}">Quiénes Somos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/clases}">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contacto}">Contacto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/login}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-info rounded-1" href="#">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--- form -->
+    <main class="container my-5">
+        <div class="card">
+            <div class="card-header">Formulario de Registro</div>
+            <div class="card-body">
+                <form th:action="@{/registro}" th:object="${usuario}" method="post"> <!-- usuario viene del controller.-->
+                <!--Mensaje general de error (DNI o email duplicado u otro error de negocio) -->
+    			<!-- Va justo al principio del formulario, antes de los campos -->
+    			<div th:if="${errorRegistro}" class="alert alert-danger" th:text="${errorRegistro}"></div>
+                
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" th:field="*{nombre}" id="nombre" required> <!-- *{} → hace referencia al objeto del th:object-->
+                            <!-- Hace que el mensaje de entity de la @NotBlank de entity-->
+                            <p class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+                        </div>
+                        <div class="col">
+                            <label for="apellidos" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control" th:field="*{apellidos}" id="apellidos" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="dni" class="form-label">DNI</label>
+                            <input type="text" class="form-control" th:field="*{dni}" id="dni" placeholder="12345678Z" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></p>
+                        </div>
+                        <div class="col">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" th:field="*{email}" id="email" placeholder="correo@ejemplo.com" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                                
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" th:field="*{password}" id="password" minlength="8" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                        </div>
+                        <div class="col">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" th:field="*{telefono}" id="telefono" placeholder="600123456" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" th:field="*{direccion}" id="direccion" required>
+                        <p class="text-danger" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></p>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="cp" class="form-label">Código Postal</label>
+                            <input type="text" class="form-control" th:field="*{codigoPostal}" id="cp" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('codigoPostal')}" th:errors="*{codigoPostal}"></p>
+                        </div>
+                        <div class="col">
+                            <label for="localidad" class="form-label">Localidad</label>
+                            <input type="text" class="form-control" th:field="*{localidad}" id="localidad" required>
+                            <p class="text-danger" th:if="${#fields.hasErrors('localidad')}" th:errors="*{localidad}"></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                        <input type="date" class="form-control" th:field="*{fechaNacimiento}" id="fecha_nacimiento" required>
+                        <p class="text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></p>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-urbanfit">Registrarse</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!--- Footer -->
+
+    <footer class="bg-footer text-light py-2">
+        <div class="container text-center">
+
+            <p class="mb-1">© 2025 UrbanFit. Todos los derechos reservados.</p>
+
+            <div class="small">
+                <a href="#" class="text-light text-decoration-none me-3">Aviso Legal</a>
+                <a href="#" class="text-light text-decoration-none me-3">Política de Privacidad</a>
+                <a href="#" class="text-light text-decoration-none">Política de Cookies</a>
+            </div>
+
+        </div>
+    </footer>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>

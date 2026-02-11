@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/* Estilos principales */
+
+html,
+body {
+    /* Ocupa toda la altura*/
+    height: 100%;
+    overflow-x: hidden;
+
+}
+
+body {
+    display: flex;
+    /* Para apilar header, main y footer en columna*/
+    flex-direction: column;
+    background: #aeacac;
+    font-family: "Montserrat", sans-serif;
+    min-height: 100vh;
+}
+
+h1,
+h2 {
+    font-family: "Catamaran", sans-serif !important;
+}
+
+/* Estilos nav*/
+.nav-bg {
+    background: #f09537;
+    color: rgb(174, 172, 172);
+}
+
+.btn-info {
+    background: #fff;
+    color: #f09537;
+    border: 0;
+}
+
+.btn-info:hover {
+    background: #070707;
+    color: #f09537;
+}
+
+.btn-info:focus,
+.btn-info:active {
+    background-color: #fff !important;
+    box-shadow: none !important;
+}
+
+/*Estilos Card*/
+.text-titulo {
+    color: #070707;
+}
+
+.card-img-top {
+    height: 350px;
+    object-fit: cover;
+    width: 100%;
+
+}
+
+.card-title {
+    color: #f09537;
+}
+
+.card-text {
+    color: rgb(174, 172, 172);
+}
+
+/* Footer*/
+.bg-footer {
+    background: #f09537;
+}
