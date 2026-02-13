@@ -57,10 +57,10 @@
                 <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar d-flex flex-column min-vh-100">
                     <div class="position-sticky pt-3">
                         <ul class="nav flex-column">
-                            <li class="nav-item"><a class="nav-link active" th:href="@{/cliente/dashboard}">Mi Perfil</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Clases</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Mis Reservas</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Historial</a></li>
+                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'perfil' ? 'active' : ''}" th:href="@{/cliente/dashboard}">Mi Perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'reservas' ? 'active' : ''}" th:href="@{/cliente/reservas}">Clases</a></li>
+                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'misReservas' ? 'active' : ''}" th:href="@{/cliente/mis-reservas}">Mis Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'historial' ? 'active' : ''}"href="#">Historial</a></li>
                             <li class="nav-item"><a class="nav-link text-danger" href="#">Cerrar Sesión</a></li>
                         </ul>
                     </div>
@@ -78,9 +78,31 @@
                     <!-- Aquí se cargará el contenido según el menú -->
                     <!-- Fragmentos dinámicos según la sección -->
     				<div th:switch="${seccion}">
-        			<!-- Si la sección es perfil, Thymeleaf inserta el fragmento _perfil.html -->
-       				 	<div th:case="'perfil'" th:replace="fragments/_perfil :: contenidoPerfil"></div>
+    					<div th:case="perfil">
+    				
+        					<!-- Si la sección es perfil, Thymeleaf inserta el fragmento _perfil.html -->
+       				 		<div th:case="'perfil'" th:replace="fragments/_perfil :: contenidoPerfil"></div>
+       				 	</div>
+       				 	
+       				 	<div th:case="reservas">
+       				 	
+       				 		<!-- Sección Reservas _reservas.html -->
+    						<div th:case="'reservas'" th:replace="~{fragments/_reservas :: reservas}"></div>
+       				 	
+       				 	</div>
+       				 	
+       				 	<div th:case="misReservas">
+       				 	
+       				 		<!-- Sección Mis Reservas _misReservas.html -->
+    						<div th:case="'reservas'" th:replace="~{fragments/_misReservas :: misReservas}"></div>
+       				 	
+       				 	</div>
+       				 	
+       				 	
     				</div>
+    				
+    				
+    				
     				
                 </div>
             </div>

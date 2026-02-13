@@ -11,10 +11,13 @@ import com.daniel.urbanfit.entity.Reserva;
 import com.daniel.urbanfit.entity.Usuario;
 import com.daniel.urbanfit.repository.HorarioRepository;
 import com.daniel.urbanfit.repository.ReservaRepository;
+
 import com.daniel.urbanfit.repository.UsuarioRepository;
 
 @Service
 public class ReservaService {
+
+   
 	
 	@Autowired
 	private ReservaRepository reservaRepository;
@@ -24,6 +27,8 @@ public class ReservaService {
 	
 	@Autowired
 	private HorarioRepository horarioRepository;
+
+
 	
 	// Obtener reservas de un Usuario
 	public List<Reserva> obtenerReservaPorUsuario (Long usuarioId){
@@ -33,15 +38,15 @@ public class ReservaService {
 	}
 	
 	// Crear nueva reserva
-	public Reserva crearReseva(Long usuarioId, Long horarioId, LocalDate fechaclase) {
+	public Reserva crearReserva(Long usuarioId, Long horarioId, LocalDate fechaclase) {
 		
 		// Usuario y Horario desde la BD
-		Usuario usuario = usuarioRepository.findById(horarioId).orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+		Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 		
 		Horario horario = horarioRepository.findById(horarioId).orElseThrow(() -> new IllegalArgumentException("Horario no encontrado"));
 		
 		// Comprobar si ya tien reserva para essa fecha y horario
-		boolean existe = reservaRepository.existsByUsuarioAndHorariosAndFechaClase(usuario, horario, fechaclase);
+		boolean existe = reservaRepository.existsByUsuarioAndHorarioAndFechaClase(usuario, horario, fechaclase);
 		
 		if (existe) {
 			throw new IllegalArgumentException("Ya tienes reserva para este dia y hora");
@@ -59,6 +64,22 @@ public class ReservaService {
 		// Guardamos en BD
 		return reservaRepository.save(reserva);
 		
+		
+	}
+	
+	// Eliminar una reserva de la BD
+	public void eliminarReserva(Long reservaid) {
+		
+		// Verificar si la reserva existe
+		if (reservaRepository.existsById(reservaid)) {
+			
+			reservaRepository.deleteById(reservaid);
+			
+			
+		} else {
+			
+			throw new IllegalArgumentException("No se encontró la reserva por ID");
+		}
 		
 	}
 	

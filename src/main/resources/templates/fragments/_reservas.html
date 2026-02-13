@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" 
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:fragment="reservas">
+
+    <!-- Mensajes de éxito/error -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Título principal -->
+    <h4 class="text-titulo mb-4">Reservar nueva clase</h4>
+
+    <!-- ════════════════════════════════════════════════════
+         FORMULARIO 1 (GET): Seleccionar fecha
+         Se envía automáticamente al cambiar la fecha
+    ═════════════════════════════════════════════════════ -->
+    <form th:action="@{/cliente/reservas}" method="get" class="card shadow-sm mb-4">
+        
+        <div class="card-header bg-urbanfit text-white fw-bold">
+            📅 Paso 1: Selecciona el día
+        </div>
+        
+        <div class="card-body">
+            <input type="date" 
+                   name="fechaClase" 
+                   class="form-control"
+                   th:value="${fechaSeleccionada}"
+                   th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"
+                   onchange="this.form.submit()"
+                   required>
+            <small class="text-muted d-block mt-2">
+                💡 Al seleccionar una fecha, se cargarán las clases disponibles para ese día
+            </small>
+        </div>
+    </form>
+
+    <!-- ════════════════════════════════════════════════════
+         FORMULARIO 2 (POST): Confirmar reserva
+         Solo aparece si ya hay una fecha seleccionada
+    ═════════════════════════════════════════════════════ -->
+    <form th:if="${fechaSeleccionada != null}" 
+          th:action="@{/cliente/reservas}" 
+          method="post" 
+          class="card shadow-sm">
+        
+        <div class="card-header bg-urbanfit text-white fw-bold">
+            🏋️ Paso 2: Selecciona la actividad
+        </div>
+        
+        <div class="card-body">
+            
+            <!-- Campo oculto que envía la fecha al servidor -->
+            <input type="hidden" name="fechaClase" th:value="${fechaSeleccionada}">
+            
+            <!-- Select con las clases del día -->
+            <label class="form-label fw-bold">Clase disponible:</label>
+            <select name="horarioId" class="form-select mb-3" required>
+                <option value="">-- Elige una clase --</option>
+                <option th:each="horario : ${horarios}"
+        				th:value="${horario.id}"
+       					th:disabled="${horarioService.contarClase(horario, fechaLD)}" 
+        				th:with="ocupadas=${horarioService.contarReservas(horario, fechaLD)}, 
+                 				total=${horario.clase.capacidad},
+                 				estaLlena=${horarioService.contarClase(horario, fechaLD)}"
+        				th:text="${horario.clase.nombre + ' - ' + horario.horarioInicio + 
+                 				(estaLlena ? ' ❌ (COMPLETA)' : ' (' + ocupadas + '/' + total + ')') }">
+</option>
+            </select>
+            
+            <!-- Alerta si no hay clases -->
+            <div th:if="${#lists.isEmpty(horarios)}" 
+                 class="alert alert-warning" 
+                 role="alert">
+                ⚠️ No hay clases disponibles para este día
+            </div>
+            
+            <!-- Botón de confirmación -->
+            <button type="submit" 
+                    class="btn btn-urbanfit w-100"
+                    th:disabled="${#lists.isEmpty(horarios)}">
+                Confirmar Reserva
+            </button>
+        </div>
+    </form>
+
+   
+
+</div>
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.daniel.urbanfit.controller;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.daniel.urbanfit.entity.Horario;
 import com.daniel.urbanfit.entity.Reserva;
 import com.daniel.urbanfit.entity.Usuario;
+import com.daniel.urbanfit.service.HorarioService;
 import com.daniel.urbanfit.service.ReservaService;
 import com.daniel.urbanfit.service.UsuarioService;
 
@@ -27,6 +32,10 @@ public class DashboardClienteController {
 	
 	@Autowired
 	private ReservaService reservaService;
+	
+	@Autowired
+	private HorarioService horarioService;
+	
 	
 	@GetMapping("/dashboard")
 	public String dashboard(Model model, Principal principal) {
@@ -54,7 +63,7 @@ public class DashboardClienteController {
         return "dashboardCliente"; // Thymeleaf buscará dashboardCliente.html
 	}
 	
-	// Post /Perfil para actualizar el perfil
+	// Post(/Perfil) para actualizar el perfil
 	@PostMapping("/perfil")
 	public String actualizarPerfil(Usuario usuarioForm, Principal principal, RedirectAttributes redirectAttributes) {
 		
@@ -81,17 +90,55 @@ public class DashboardClienteController {
 	    return "redirect:/cliente/dashboard";
 	}
 	
-	// Get /reservas para mostrar las reservas.
-	
+	// Get(/reservas) para mostrar las reservas.	
 	@GetMapping("/reservas")
-	public String verReservas (Model model, Principal principal) {
+	public String verReservas ( @RequestParam(required = false) String fechaClase, Model model, Principal principal) {
 		
 		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(principal.getName()); // obtener usuario logueado usuando mail
 		List<Reserva> reservas = reservaService.obtenerReservaPorUsuario(usuario.getId()); // obterner todas las reserva del usuario
 		
+		// --- LÓGICA DE RESTRICCIÓN DE FECHAS (Semana vista) ---
+        LocalDate hoy = LocalDate.now();
+        LocalDate fechaLimite = hoy.plusDays(6); // Define el rango de 7 días (hoy + 6 próximos)
+		
+		// Filtrar si hay fecha de reserva o no
+		List<Horario> horarios;
+		
+		if (fechaClase !=null && !fechaClase.isEmpty()) {
+			
+			// Si hay fecha seleccionada, convertirmos el String a LocalDate
+			LocalDate fecha = LocalDate.parse(fechaClase);
+			
+			// Validación preventiva: Si el usuario manipula la URL con una fecha fuera de rango
+            if (fecha.isBefore(hoy) || fecha.isAfter(fechaLimite)) {
+                horarios = new ArrayList<>();
+                model.addAttribute("error", "La fecha seleccionada está fuera del rango permitido.");
+                
+            } else {		
+			
+			
+			// Llamamos al service para filtrar día de la semana
+			horarios = horarioService.obtenerPorDiaSemana(fecha);
+			
+			// Enviamos el servicio al modelo para que Thymeleaf pueda ejecutar cálculos en tiempo real
+			model.addAttribute("horarioService", horarioService); 
+			
+			// Enviamos la fecha como objeto LocalDate para que los métodos del service la reconozcan
+		    model.addAttribute("fechaLD", fecha); 
+		    
+		    model.addAttribute("fechaSeleccionada", fechaClase);
+            }
+            
+		} else {
+			// Primera carga de la página no hay fecha seleccionada, se crear lista vacía.
+			horarios = new ArrayList<>();
+		}
+		
+		
 		// Pasamos al Model
 		model.addAttribute("usuario", usuario);
 		model.addAttribute("reservas",reservas);
+		model.addAttribute("horarios", horarios);
 		
 		// Indicamos sección activa
 		model.addAttribute("seccion", "reservas"); // reservas se pone en el th:case="reservas" del fragmento de html
@@ -101,6 +148,83 @@ public class DashboardClienteController {
 	}
 	
 	@PostMapping("/reservas")
-	public String crearReservas
+	public String crearReserva(@RequestParam Long horarioId, @RequestParam String fechaClase, Principal principal, RedirectAttributes redirectAttributes ) {
+		
+		// Principal representa al usuario autenticado (Spring Security)
+        // getName() devuelve el username/email con el que inició sesión
+		String emailUsuario = principal.getName(); // email o username conseguimos
+		
+		// Obtenemos el usuario logueago
+		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(emailUsuario);
+		
+		// Pasamos la fecha de la reserva que está en String a Localdate
+		LocalDate fecha = LocalDate.parse(fechaClase);
+		
+		// --- VALIDACIÓN DE SEGURIDAD EN SERVIDOR ---
+        // Evita que usuarios avanzados se salten la restricción del HTML
+        LocalDate hoy = LocalDate.now();
+        LocalDate limite = hoy.plusDays(6);
+        
+        if (fecha.isBefore(hoy) || fecha.isAfter(limite)) {
+            redirectAttributes.addFlashAttribute("error", "Operación no permitida: Solo se puede reservar a una semana vista.");
+            return "redirect:/cliente/reservas";
+        }
+		
+		try {
+			
+			// Creamos la reserva usando el service
+			reservaService.crearReserva(usuario.getId(), horarioId, fecha);
+			
+			// Mensaje de éxito que desaparece al recargar (usando Flash Attribute)
+			redirectAttributes.addFlashAttribute("mensaje", "Reserva realizada correctamente");
+			
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "No se ha podido completar la reserva. Inténtalo de nuevo.");
+		}
+		
+		return "redirect:/cliente/reservas";
+		
+	}
+	
+	
+	// Método para ver mis reservas
+	@GetMapping("/mis-reservas")
+	public String verMisReservas(Model model, Principal principal) {
+		
+		// Identificar el usuario
+		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(principal.getName());
+		
+		// Obtener las reservas que ya tiene en la Base de datos. 
+		List<Reserva> reservas = reservaService.obtenerReservaPorUsuario(usuario.getId());
+		
+		// Pasamos el model
+		model.addAttribute("usuario", usuario);
+	    model.addAttribute("usuarioNombre", usuario.getNombre());
+	    model.addAttribute("reservas", reservas);
+	    model.addAttribute("seccion", "misReservas"); // <--- Clave para el switch y el sidebar active
+	    
+	    return "dashboardCliente";
+	}
+	
+	
+	
+	
+	// Método para Cancelar Reservas
+	@PostMapping("/cancelar")
+	public String cancelarReserva(@RequestParam Long reservaId, RedirectAttributes redirectAttributes) {
+		try {
+			
+			reservaService.eliminarReserva(reservaId);
+			redirectAttributes.addFlashAttribute("mensaje", "La reserva ha sido cancelada con éxito.");
+			
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "No se pudo cancelar la reserva: ");
+		}
+		
+		//Redirigimos siempre a la lista de reservas para que vea los cambios
+	    return "redirect:/cliente/mis-reservas";
+	}
+	
+	
 
 }

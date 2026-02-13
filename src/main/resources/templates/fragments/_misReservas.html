@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:fragment="misReservas">
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-urbanfit text-white fw-bold">
+            📋 Mis clases reservadas
+        </div>
+
+        <div class="card-body">
+
+            <!-- Si no hay reservas -->
+            <div th:if="${#lists.isEmpty(reservas)}" class="alert alert-info mb-0">
+                Todavía no has realizado ninguna reserva. ¡Anímate a empezar! 💪
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-responsive" th:if="${!#lists.isEmpty(reservas)}">
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr class="text-titulo">
+                            <th>Clase</th>
+                            <th>Fecha</th>
+                            <th>Horario</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="reserva : ${reservas}">
+                            <td class="fw-bold"
+                                th:text="${reserva.horario.clase.nombre}">
+                            </td>
+
+                            <td th:text="${#temporals.format(reserva.fechaClase, 'dd/MM/yyyy')}"></td>
+
+                            <td th:text="${reserva.horario.horarioInicio + ' - ' + reserva.horario.horarioFin}"></td>
+
+                            <td class="text-center">
+                                <form th:action="@{/cliente/cancelar}" 
+                                      method="post"
+                                      onsubmit="return confirm('¿Seguro que deseas cancelar esta clase?')">
+
+                                    <input type="hidden" 
+                                           name="reservaId" 
+                                           th:value="${reserva.id}">
+
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-urbanfit">
+                                        Cancelar
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

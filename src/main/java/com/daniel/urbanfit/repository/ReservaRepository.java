@@ -15,6 +15,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 	List<Reserva> findByUsuarioId(Long usarioId);
 	
 	// Buscar reservas por horario y fecha de clase para evitar reservas duplicadas (la validación se hace en el service)
-	boolean existsByUsuarioAndHorariosAndFechaClase(Usuario usuario, Horario horario, LocalDate fechaclase);
-
+	boolean existsByUsuarioAndHorarioAndFechaClase(Usuario usuario, Horario horario, LocalDate fechaclase);
+	
+	// Contar cuantas reservas activas hay para un horario y una fecha. 
+	Long countByHorarioAndFechaClaseAndActivaTrue(Horario horario, LocalDate fechaClase);
 }
