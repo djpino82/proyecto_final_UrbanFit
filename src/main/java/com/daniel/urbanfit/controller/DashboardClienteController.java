@@ -194,13 +194,14 @@ public class DashboardClienteController {
 		// Identificar el usuario
 		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(principal.getName());
 		
-		// Obtener las reservas que ya tiene en la Base de datos. 
-		List<Reserva> reservas = reservaService.obtenerReservaPorUsuario(usuario.getId());
+		// Obtener reservas activas directamente desde el service (ya ordenadas)
+	    List<Reserva> reservasFuturas = reservaService.obtenerReservasFuturasPorUsuario(usuario.getId());
+		
 		
 		// Pasamos el model
 		model.addAttribute("usuario", usuario);
 	    model.addAttribute("usuarioNombre", usuario.getNombre());
-	    model.addAttribute("reservas", reservas);
+	    model.addAttribute("reservas", reservasFuturas);
 	    model.addAttribute("seccion", "misReservas"); // <--- Clave para el switch y el sidebar active
 	    
 	    return "dashboardCliente";
@@ -214,7 +215,8 @@ public class DashboardClienteController {
 	public String cancelarReserva(@RequestParam Long reservaId, RedirectAttributes redirectAttributes) {
 		try {
 			
-			reservaService.eliminarReserva(reservaId);
+			// Cancelamos la reserva
+	        reservaService.cancelarReserva(reservaId);
 			redirectAttributes.addFlashAttribute("mensaje", "La reserva ha sido cancelada con éxito.");
 			
 		} catch (Exception e) {
@@ -223,6 +225,31 @@ public class DashboardClienteController {
 		
 		//Redirigimos siempre a la lista de reservas para que vea los cambios
 	    return "redirect:/cliente/mis-reservas";
+	}
+	
+	// Método para mostrar Historial
+	@GetMapping("/historial")
+	public String verHistorial (Model model, Principal principal) {
+		
+		// Obtener usuario logueado
+		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(principal.getName());
+		
+		
+		List<Reserva> asistidas = reservaService.obtenerClasesAsistidasPorUsuario(usuario.getId());
+		
+		List<Reserva> canceladasNoAsistidas = reservaService.obtenerClasesNoAsistidasOCanceladas(usuario.getId());
+		
+		
+		// Pasar datos al model
+		model.addAttribute("usuario", usuario);
+		model.addAttribute("usuarioNombre", usuario.getNombre());
+		model.addAttribute("historialAsistidas",asistidas);
+		model.addAttribute("historialCanceladas", canceladasNoAsistidas);
+		
+		// sección
+		model.addAttribute("seccion", "historial");
+		
+		return "dashboardCliente";
 	}
 	
 	

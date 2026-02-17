@@ -67,22 +67,55 @@ public class ReservaService {
 		
 	}
 	
-	// Eliminar una reserva de la BD
-	public void eliminarReserva(Long reservaid) {
+	// Marcar una reseva como cancelada (NO nos interesa borrarla de la BD para poder disponer de estos datos)
+	public void cancelarReserva(Long reservaId) {
 		
-		// Verificar si la reserva existe
-		if (reservaRepository.existsById(reservaid)) {
+		Reserva reserva = reservaRepository.findById(reservaId).orElseThrow(() -> new IllegalArgumentException("No se encontró la reserva por ID"));
+		
+		reserva.setActiva(false); // marcamos como cancelada
+		reservaRepository.save(reserva);
 			
-			reservaRepository.deleteById(reservaid);
-			
-			
-		} else {
-			
-			throw new IllegalArgumentException("No se encontró la reserva por ID");
-		}
+		
 		
 	}
 	
+	// Obtener historial de reservas por usuario
+	public List<Reserva> obtenerHistorialPorUsuario(Long usuarioId){
+		return reservaRepository.findByUsuarioIdAndFechaClaseBefore(usuarioId, LocalDate.now());
+	}
+	
+	// Obtener reservas Activas ordenadas por fechas de mas actual a menos
+	public List<Reserva> obtenerReservasActivasPorUsuario(Long usuarioId) {
+		return reservaRepository.findByUsuarioIdAndActivaOrderByFechaClaseDesc(usuarioId, true);
+	}
+	
+	// Obtener reservas Canceladas ordenadas por fechas de mas actual a menos
+	public List<Reserva> obtenerReservasCanceladasPorUsuario(Long usuarioId) {
+		return reservaRepository.findByUsuarioIdAndActivaOrderByFechaClaseDesc(usuarioId, false);
+	}
+		
+	// Obtener reservas Activas ordenadas por fechas de mas antigua a mas actual. La usamos para listar las reservas de un usuario.
+	public List<Reserva> obtenerReservasMasProximaPorUsuario(Long usuarioId) {
+		return reservaRepository.findByUsuarioIdAndActivaOrderByFechaClaseAsc(usuarioId, true);
+	}
+	
+	//Esto filtra automáticamente las reservas para que no se muestren las que ya pasaron ni las canceladas.
+	public List<Reserva> obtenerReservasFuturasPorUsuario(Long usuarioId) {
+		 LocalDate hoy = LocalDate.now();
+		 return reservaRepository.findByUsuarioIdAndActivaAndFechaClaseAfterOrderByFechaClaseAsc(usuarioId, true, hoy);
+		}
+	
+	// Obtener historial de clases asistidas (solo asistenciaConfirmada = true)
+	public List<Reserva> obtenerClasesAsistidasPorUsuario(Long usuarioId) {
+	    return reservaRepository.findByUsuarioIdAndActivaAndAsistenciaConfirmadaOrderByFechaClaseDesc(usuarioId, true, true);
+	}
+
+	// Obtener historial de clases canceladas o no asistidas
+	public List<Reserva> obtenerClasesNoAsistidasOCanceladas(Long usuarioId) {
+	    return reservaRepository.findByUsuarioIdAndActivaAndAsistenciaConfirmadaOrderByFechaClaseDesc(usuarioId, false, false);
+	}
+
+
 	
 
 }

@@ -305,3 +305,29 @@ body.pagina-contacto h3 {
     background-color: #fdf3e7;
 }
 
+/* Clases canceladas estilo UrbanFit */
+.bg-cancelada {
+    background-color: #f09537; /* tu color corporativo */
+    color: #fff;               /* texto blanco para contraste */
+    font-weight: bold;
+}
+
+/* Botón logout estilo UrbanFit, igual al sidebar */
+.sidebar .logout-btn {
+    color: #070707;        /* naranja UrbanFit */
+    background: transparent;
+    border: none;
+    width: 100%;           /* ocupa todo el ancho del li */
+    text-align: left;      /* igual que los links */
+    padding: 0.5rem 1rem;  /* mismo padding que los nav-links */
+    font: inherit;         /* misma fuente y tamaño */
+    cursor: pointer;
+    display: flex;
+    align-items: center;   /* centra verticalmente */
+    gap: 0.5rem;           /* si quieres icono a la izquierda */
+}
+
+.sidebar .logout-btn:hover {
+    color: #f09537;        /* efecto hover */
+    text-decoration: none;
+}

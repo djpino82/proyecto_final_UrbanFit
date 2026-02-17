@@ -60,8 +60,16 @@
                             <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'perfil' ? 'active' : ''}" th:href="@{/cliente/dashboard}">Mi Perfil</a></li>
                             <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'reservas' ? 'active' : ''}" th:href="@{/cliente/reservas}">Clases</a></li>
                             <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'misReservas' ? 'active' : ''}" th:href="@{/cliente/mis-reservas}">Mis Reservas</a></li>
-                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'historial' ? 'active' : ''}"href="#">Historial</a></li>
-                            <li class="nav-item"><a class="nav-link text-danger" href="#">Cerrar Sesión</a></li>
+                            <li class="nav-item"><a class="nav-link" th:classappend="${seccion == 'historial' ? 'active' : ''}" th:href="@{/cliente/historial}">Historial</a></li>
+                            
+                            <!-- Logout -->
+                            <li class="nav-item">
+                            
+                            	<form th:action="@{/logout}" method="post" class="m-0 p-0">
+       								<button type="submit" class="logout-btn">Cerrar Sesión</button>
+    							</form>
+                            
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -94,7 +102,14 @@
        				 	<div th:case="misReservas">
        				 	
        				 		<!-- Sección Mis Reservas _misReservas.html -->
-    						<div th:case="'reservas'" th:replace="~{fragments/_misReservas :: misReservas}"></div>
+    						<div th:case="'misReservas'" th:replace="~{fragments/_misReservas :: misReservas}"></div>
+       				 	
+       				 	</div>
+       				 	
+       				 	<div th:case="historial">
+       				 	
+       				 		<!-- Sección Historial _historial.html -->
+    						<div th:case="'historial'" th:replace="~{fragments/_historial :: historial}"></div>
        				 	
        				 	</div>
        				 	

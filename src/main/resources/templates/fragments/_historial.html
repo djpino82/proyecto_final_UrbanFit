@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Reservas</title>
+    <title>Historial</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -31,53 +31,70 @@
 
         <div class="card-body">
 
-            <!-- Si no hay historial -->
-            <div th:if="${#lists.isEmpty(historial)}" 
-                 class="alert alert-info mb-0">
-                Aún no has asistido a ninguna clase. ¡Te esperamos en la próxima! 💪
-            </div>
-
-            <!-- Tabla historial -->
-            <div class="table-responsive" 
-                 th:if="${!#lists.isEmpty(historial)}">
-
-                <table class="table table-hover align-middle">
-
-                    <thead>
-                        <tr class="text-titulo">
-                            <th>Clase</th>
-                            <th>Fecha</th>
-                            <th>Horario</th>
-                            <th>Monitor</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr th:each="reserva : ${historial}">
-
-                            <td class="fw-bold"
-                                th:text="${reserva.horario.clase.nombre}">
-                            </td>
-
-                            <td th:text="${#temporals.format(reserva.fechaClase, 'dd/MM/yyyy')}">
-                            </td>
-
-                            <td th:text="${reserva.horario.horarioInicio + ' - ' + reserva.horario.horarioFin}">
-                            </td>
-
-                            <td th:text="${reserva.horario.monitor.nombre}">
-                            </td>
-
-                        </tr>
-                    </tbody>
-
-                </table>
-            </div>
-
+            <!-- Tabla de clases asistidas -->
+<div th:if="${!#lists.isEmpty(historialAsistidas)}">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-urbanfit text-white fw-bold">
+            📚 Historial de clases asistidas
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="text-titulo">
+                        <th>Clase</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Monitor</th>
+                        <th>Asistencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reserva : ${historialAsistidas}">
+                        <td th:text="${reserva.horario.clase.nombre}"></td>
+                        <td th:text="${#temporals.format(reserva.fechaClase, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${reserva.horario.horarioInicio + ' - ' + reserva.horario.horarioFin}"></td>
+                        <td th:text="${reserva.horario.clase.monitor.nombre}"></td>
+                        <td th:text="'Sí'"></td> <!-- Todas son asistencia confirmada -->
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
+
+<!-- Tabla de clases canceladas / no asistidas -->
+<div th:if="${!#lists.isEmpty(historialCanceladas)}">
+    <div class="card shadow-sm">
+        <div class="card-header bg-cancelada text-white fw-bold">
+            ❌ Clases canceladas / No asistidas
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr class="text-titulo">
+                        <th>Clase</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Monitor</th>
+                        <th>Estado</th> 
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reserva : ${historialCanceladas}">
+                        <td th:text="${reserva.horario.clase.nombre}"></td>
+                        <td th:text="${#temporals.format(reserva.fechaClase, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${reserva.horario.horarioInicio + ' - ' + reserva.horario.horarioFin}"></td>
+                        <td th:text="${reserva.horario.clase.monitor.nombre}"></td>
+                        <td th:text="${!reserva.activa ? 'Cancelada' : 'No asistida'}"></td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 	
 
 
