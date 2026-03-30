@@ -2,7 +2,10 @@ package com.daniel.urbanfit.entity;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -39,12 +43,15 @@ public class Clase {
 	// Relaciones
 		
 	@ManyToOne
-	@JoinColumn(name = "monitor_id", nullable = false) // No puede ser null
+	@JoinColumn(name = "monitor_id", nullable = true) // 
 	private Usuario monitor; // Si en MySQL hay un FK, esto en Java es un objeto. No se hace private String monitor.
 	
 	@ManyToOne
 	@JoinColumn(name = "tipos_clase_id", nullable = false)
 	private TipoClase tipoClase;
+	
+	@OneToMany(mappedBy = "clase", cascade = CascadeType.ALL, orphanRemoval = true)
+	 private List<Horario> horarios = new ArrayList<>();
 	
 	@PrePersist
     public void prePersist() {
@@ -93,6 +100,8 @@ public class Clase {
 	public LocalDateTime getFechaModificacion() {
 		return fechaModificacion;
 	}
+	
+	public List<Horario> getHorarios() { return horarios; }
 
 	public void setFechaModificacion(LocalDateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
@@ -112,6 +121,10 @@ public class Clase {
 
 	public void setTipoClase(TipoClase tipoClase) {
 		this.tipoClase = tipoClase;
+	}
+	
+	public void setHorarios(List<Horario> horarios) { 
+		this.horarios = horarios;
 	}
 	
 

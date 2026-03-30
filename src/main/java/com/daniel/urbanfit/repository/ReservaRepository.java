@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.daniel.urbanfit.entity.Horario;
 import com.daniel.urbanfit.entity.Reserva;
@@ -36,7 +38,39 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 	List<Reserva> findByUsuarioIdAndActivaAndAsistenciaConfirmadaOrderByFechaClaseDesc(Long usuarioId, boolean activa, boolean asistenciaConfirmada);
 
 	// Historial de clases canceladas o no asistidas
-	List<Reserva> findByUsuarioIdAndActivaOrAsistenciaConfirmadaOrderByFechaClaseDesc(Long usuarioId, boolean activa, boolean asistenciaConfirmada);
+	@Query("""
+			   SELECT r FROM Reserva r
+			   WHERE r.usuario.id = :usuarioId
+			   AND (
+			        r.activa = false
+			        OR
+			        (r.activa = true AND r.asistenciaConfirmada = false AND r.fechaClase < CURRENT_DATE)
+			   )
+			   ORDER BY r.fechaClase DESC
+			""")
+			List<Reserva> obtenerClasesCanceladasONoAsistidas(@Param("usuarioId") Long usuarioId);
 
+
+	// Trae todas las reservas activas
+	List<Reserva> findByHorario_Clase_IdAndActivaTrue(Long claseId);
+	
+	// Cuenta el número de reservas ACTIVAS asociadas a una clase concreta.
+	Long countByHorarioClaseIdAndActivaTrue(Long claseId);
+	
+	// Obtiene las reservas de las clases de un monitor (sirve para ver la agenda)
+    // El JOIN hace: Reserva -> Horario -> Clase -> Monitor
+    @Query("SELECT r FROM Reserva r WHERE r.horario.clase.monitor.id = :monitorId AND r.activa = true ORDER BY r.fechaClase ASC, r.horario.horarioInicio ASC")
+    List<Reserva> findReservasPorMonitor(@Param("monitorId") Long monitorId);
+
+    // Cuenta cuántos alumnos hay para un horario específico en una fecha específica
+    // (Esto es lo que hará que el 01/14 sea real para cada fila)
+    Long countByHorarioIdAndFechaClaseAndActivaTrue(Long horarioId, LocalDate fechaClase);
+    
+    // Este método busca alumnos filtrando por:
+    // 1. El ID de la clase (entrando desde Reserva -> Horario -> Clase)
+    // 2. La fecha exacta de la sesión (para que no salgan alumnos de otros días)
+    // 3. Que la reserva esté activa (no cancelada)
+    List<Reserva> findByHorario_Clase_IdAndFechaClaseAndActivaTrue(Long claseId, LocalDate fecha);
+	
 	
 }

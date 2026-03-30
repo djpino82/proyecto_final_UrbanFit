@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alumnos Inscritos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:fragment="alumnosInscritosFragment">
+    <h3 class="mb-4 text-titulo fw-bold" 
+        th:text="${claseSeleccionada != null} ? 'Alumnos en ' + ${claseSeleccionada.nombre} : 'Alumnos inscritos'">
+    </h3>
+
+    <div class="table-responsive shadow-sm rounded" th:if="${reservas != null and #lists.size(reservas) > 0}">
+        <table class="table table-hover align-middle bg-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre Alumno</th>
+                    <th>Email</th>
+                    <th class="text-center">Asistencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reserva : ${reservas}">
+                    <td class="fw-bold" th:text="${reserva.usuario.nombre}"></td>
+                    <td class="text-muted" th:text="${reserva.usuario.email}"></td>
+                    <td class="text-center">
+                        <form th:action="@{/monitor/asistencia}" method="post">
+                            <!-- ID de la reserva -->
+                            <input type="hidden" name="reservaId" th:value="${reserva.id}" />
+                            <!-- Valor para indicar que asistió -->
+                            <input type="hidden" name="asistio" value="true" />
+
+                            <button type="submit" 
+                                    th:class="${reserva.asistenciaConfirmada} ? 'btn btn-sm btn-success disabled' : 'btn btn-sm btn-urbanfit'"
+                                    th:disabled="${reserva.asistenciaConfirmada}">
+                                <i th:class="${reserva.asistenciaConfirmada} ? 'bi bi-check-circle-fill' : 'bi bi-person-check'"></i>
+                                <span th:text="${reserva.asistenciaConfirmada} ? ' Confirmada' : ' Confirmar'"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${reservas == null or #lists.size(reservas) == 0}" class="alert alert-light border shadow-sm text-center">
+        <p class="mb-0">No hay alumnos inscritos en esta sesión concreta.</p>
+        <a th:href="@{/monitor/clases}" class="btn btn-link text-titulo mt-2">Volver a la agenda</a>
+    </div>
+</div>
+
+</body>
+</html>

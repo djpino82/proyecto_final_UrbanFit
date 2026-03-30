@@ -331,3 +331,28 @@ body.pagina-contacto h3 {
     color: #f09537;        /* efecto hover */
     text-decoration: none;
 }
+
+/* Botones acción tabla dashboard */
+.btn-editar {
+    background-color: #f09537;
+    border: none;
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.btn-editar:hover {
+    background-color: #070707;
+    color: #f09537;
+}
+
+.btn-eliminar {
+    background-color: #070707;
+    border: none;
+    color: #fff;
+    font-size: 0.85rem;
+}
+
+.btn-eliminar:hover {
+    background-color: #f09537;
+    color: #070707;
+}

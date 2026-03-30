@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+</head>
+<body>
+
+<div th:fragment="gestionUsuarios">
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <h4 class="text-titulo mb-3">Usuarios registrados</h4>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>DNI</th>
+            <th>Rol</th>
+            <th>Fecha de pago</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${usuarios}">
+            <td th:text="${u.nombre}"></td>
+            <td th:text="${u.apellidos}"></td>
+            <td th:text="${u.email}"></td>
+            <td th:text="${u.dni}"></td>
+            <td th:text="${u.rol.nombre}"></td>
+            <td th:text="${u.fechaPago != null ? #temporals.format(u.fechaPago,'dd/MM/yyyy') : '-'}"></td>
+            <td>
+                <span th:if="${u.estado}" class="badge bg-success">Activo</span>
+                <span th:unless="${u.estado}" class="badge bg-danger">Inactivo</span>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-editar"
+                        data-bs-toggle="modal"
+                        th:data-bs-target="'#modalEditarUsuario' + ${u.id}">
+                    Editar
+                </button>
+                <form th:action="@{/admin/usuarios/{id}/eliminar(id=${u.id})}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-eliminar"
+                            onclick="return confirm('¿Seguro que quieres eliminar este usuario?')">
+                        Eliminar
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Modales editar usuario -->
+    <div th:each="u : ${usuarios}">
+        <div class="modal fade" th:id="'modalEditarUsuario' + ${u.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Usuario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form th:action="@{/admin/usuarios/{id}/editar(id=${u.id})}" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="nombre" class="form-control" th:value="${u.nombre}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" name="apellidos" class="form-control" th:value="${u.apellidos}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" th:value="${u.email}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" name="telefono" class="form-control" th:value="${u.telefono}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Rol</label>
+                                <select name="rolId" class="form-select">
+                                    <option th:each="r : ${roles}"
+                                            th:value="${r.id}"
+                                            th:text="${r.nombre}"
+                                            th:selected="${r.id == u.rol.id}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Fecha de pago</label>
+                                <input type="date" name="fechaPago" class="form-control"
+                                       th:value="${u.fechaPago != null ? #temporals.format(u.fechaPago,'yyyy-MM-dd') : ''}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select name="estado" class="form-select">
+                                    <option value="true" th:selected="${u.estado}">Activo</option>
+                                    <option value="false" th:selected="${!u.estado}">Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-urbanfit">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <title>Dashboard Administrador</title>
+</head>
+
+<body class="pagina-dashboard">
+
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-sm nav-bg py-2">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/logo_UrbanFit.png}" alt="Logo UrbanFit" width="75" height="75"
+                     class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/clases}">Clases</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="flex-grow-1">
+        <div class="container-fluid">
+            <div class="row">
+
+                <!-- Sidebar -->
+                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar d-flex flex-column min-vh-100">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/clases}"
+                                   th:classappend="${seccion == 'clases'} ? ' active' : ''">
+                                    Gestión de Clases
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/usuarios}"
+                                   th:classappend="${seccion == 'usuarios'} ? ' active' : ''">
+                                    Gestión de Usuarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/monitores}"
+                                   th:classappend="${seccion == 'monitores'} ? ' active' : ''">
+                                    Monitores
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/admin/estadisticas}"
+                                   th:classappend="${seccion == 'estadisticas'} ? ' active' : ''">
+                                    Estadísticas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form th:action="@{/logout}" method="post" class="m-0 p-0">
+                                    <button type="submit" class="nav-link text-danger border-0 bg-transparent">
+                                        Cerrar Sesión
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- Contenido dinámico -->
+                <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <h1 class="h2 mt-4">Panel De Administrador</h1>
+                    <p class="lead">Aquí podrás gestionar clases, usuarios, asignar roles y consultar estadísticas.</p>
+
+                    <div th:switch="${seccion}">
+                        <div th:case="'clases'"        th:insert="~{fragments/_gestionClases :: gestionClases}"></div>
+                        <div th:case="'usuarios'"      th:insert="~{fragments/_gestionUsuarios :: gestionUsuarios}"></div>
+                        <div th:case="'monitores'"     th:insert="~{fragments/_gestionMonitores :: gestionMonitores}"></div>
+                        <div th:case="'estadisticas'"  th:insert="~{fragments/_estadisticas :: estadisticas}"></div>
+                        <div th:case="*">
+                            <p class="text-muted mt-3">Selecciona una sección del menú.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-footer text-light py-2">
+        <div class="container text-center">
+            <p class="mb-1">© 2025 UrbanFit. Todos los derechos reservados.</p>
+            <div class="small">
+                <a href="#" class="text-light text-decoration-none me-3">Aviso Legal</a>
+                <a href="#" class="text-light text-decoration-none me-3">Política de Privacidad</a>
+                <a href="#" class="text-light text-decoration-none">Política de Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+
+</body>
+</html>

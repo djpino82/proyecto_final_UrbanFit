@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"></head>
+<body>
+
+<div th:fragment="gestionMonitores">
+
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <h4 class="text-titulo mb-4">Asignar Monitor a Clase</h4>
+    <form th:action="@{/admin/monitores/asignar}" method="post" class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Monitor</label>
+                <select name="monitorId" class="form-select" required>
+                    <option value="">-- Ninguno --</option>
+                    <option th:each="m : ${monitores}"
+                            th:value="${m.id}"
+                            th:text="${m.nombre + ' ' + m.apellidos}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Clase</label>
+                <select name="claseId" class="form-select" required>
+                    <option value="">-- Selecciona una clase --</option>
+                    <option th:each="c : ${clases}"
+                            th:value="${c.id}"
+                            th:text="${c.nombre}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-urbanfit w-100">Asignar Monitor</button>
+        </div>
+    </form>
+
+    <h4 class="text-titulo mb-3">Monitores registrados</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Clases asignadas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${monitores}">
+                <td th:text="${m.nombre}"></td>
+                <td th:text="${m.apellidos}"></td>
+                <td th:text="${m.email}"></td>
+                <td>
+                    <span th:each="c : ${clases}" th:if="${c.monitor != null and c.monitor.id == m.id}">
+                        <span class="badge bg-secondary me-1" th:text="${c.nombre}"></span>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

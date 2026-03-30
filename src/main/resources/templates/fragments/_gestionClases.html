@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div th:fragment="gestionClases">
+
+    <!-- Mensajes -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Formulario crear clase -->
+    <h4 class="text-titulo mb-4">Crear Nueva Clase</h4>
+    <form th:action="@{/admin/clases}" method="post" class="card shadow-sm mb-5">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nombre de la clase</label>
+                    <input type="text" name="nombre" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Capacidad</label>
+                    <input type="number" name="capacidad" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Monitor</label>
+                    <select name="monitor.id" class="form-select" required>
+                        <option value="">-- Selecciona un monitor --</option>
+                        <option th:each="m : ${monitores}"
+                                th:value="${m.id}"
+                                th:text="${m.nombre + ' ' + m.apellidos}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo de clase</label>
+                    <select name="tipoClase.id" class="form-select">
+                        <option value="">-- Selecciona un tipo --</option>
+                        <option th:each="t : ${tiposClase}"
+                                th:value="${t.id}"
+                                th:text="${t.nombre}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nuevo tipo (Opcional)</label>
+                    <input type="text" name="nuevoTipoNombre" class="form-control"
+                           placeholder="Ej: Crossfit">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Descripción del nuevo tipo (Opcional)</label>
+                    <input type="text" name="nuevoTipoDescripcion" class="form-control"
+                           placeholder="Ej: Entrenamiento funcional de alta intensidad">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-urbanfit w-100">Crear Clase</button>
+        </div>
+    </form>
+
+    <!-- Grid de clases existentes -->
+    <h4 class="text-titulo mb-4">Clases existentes</h4>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+        <div class="col" th:each="c : ${clases}">
+            <div class="card shadow-sm h-100">
+
+                <!-- Cabecera -->
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-bold" th:text="${c.nombre}"></span>
+                    <span class="badge bg-secondary" th:text="${c.tipoClase.nombre}"></span>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body d-flex flex-column gap-3">
+
+                    <!-- Monitor y capacidad -->
+                    <div class="d-flex gap-3 text-muted small">
+                        <span>👤 <span th:text="${c.monitor != null ? c.monitor.nombre + ' ' + c.monitor.apellidos : 'Sin monitor'}"></span></span>
+                        <span>👥 <span th:text="${c.capacidad}"></span> personas</span>
+                    </div>
+
+                    <!-- Horarios -->
+                    <div>
+                        <p class="mb-2 small fw-semibold text-muted text-uppercase">Horarios</p>
+                        <div th:if="${#lists.isEmpty(horariosPorClase[c.id])}" class="text-muted small fst-italic">
+                            Sin horarios asignados
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item px-0 py-1 d-flex align-items-center justify-content-between"
+                                th:each="h : ${horariosPorClase[c.id]}">
+                                <span style="display:grid; grid-template-columns: 95px 1fr; gap: 8px; align-items:center;" class="small">
+                                    <strong th:text="${h.diaSemana}"></strong>
+                                    <span style="font-variant-numeric: tabular-nums;"
+                                          th:text="${#temporals.format(h.horarioInicio, 'HH:mm') + ' - ' + #temporals.format(h.horarioFin, 'HH:mm')}"></span>
+                                </span>
+                                <span class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-editar" data-bs-toggle="modal"
+                                            th:data-bs-target="'#modalEditarHorario' + ${h.id}">✏</button>
+                                    <form th:action="@{/admin/clases/{cid}/horarios/{hid}/eliminar(cid=${c.id},hid=${h.id})}"
+                                          method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-eliminar"
+                                                onclick="return confirm('¿Eliminar este horario?')">✕</button>
+                                    </form>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Botón añadir horario -->
+                    <button class="btn btn-urbanfit btn-sm mt-auto" data-bs-toggle="modal"
+                            th:data-bs-target="'#modalCrearHorario' + ${c.id}">+ Añadir horario</button>
+
+                </div>
+
+                <!-- Footer: editar / eliminar clase -->
+                <div class="card-footer d-flex gap-2">
+                    <button class="btn btn-editar btn-sm flex-fill" data-bs-toggle="modal"
+                            th:data-bs-target="'#modalEditarClase' + ${c.id}">Editar clase</button>
+                    <form th:action="@{/admin/clases/{id}/eliminar(id=${c.id})}" method="post" class="d-inline flex-fill">
+                        <button type="submit" class="btn btn-eliminar btn-sm w-100"
+                                onclick="return confirm('¿Seguro que quieres eliminar esta clase?')">Eliminar</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales editar clase y crear horario -->
+    <div th:each="c : ${clases}">
+        <!-- Modal editar clase -->
+        <div class="modal fade" th:id="'modalEditarClase' + ${c.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Clase</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form th:action="@{/admin/clases/{id}/editar(id=${c.id})}" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="nombre" class="form-control" th:value="${c.nombre}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Capacidad</label>
+                                <input type="number" name="capacidad" class="form-control" th:value="${c.capacidad}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Monitor</label>
+                                <select name="monitor.id" class="form-select">
+                                    <option th:each="m : ${monitores}" th:value="${m.id}"
+                                            th:text="${m.nombre + ' ' + m.apellidos}"
+                                            th:selected="${m.id == c.monitor.id}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tipo de clase</label>
+                                <select name="tipoClase.id" class="form-select">
+                                    <option th:each="t : ${tiposClase}" th:value="${t.id}"
+                                            th:text="${t.nombre}" th:selected="${t.id == c.tipoClase.id}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-urbanfit">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal crear horario -->
+        <div class="modal fade" th:id="'modalCrearHorario' + ${c.id}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Añadir Horario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form th:action="@{/admin/clases/{id}/horarios(id=${c.id})}" method="post">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Día de la semana</label>
+                                <select name="diaSemana" class="form-select" required>
+                                    <option value="">-- Selecciona un día --</option>
+                                    <option value="Lunes">Lunes</option>
+                                    <option value="Martes">Martes</option>
+                                    <option value="Miércoles">Miércoles</option>
+                                    <option value="Jueves">Jueves</option>
+                                    <option value="Viernes">Viernes</option>
+                                    <option value="Sábado">Sábado</option>
+                                    <option value="Domingo">Domingo</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Hora inicio</label>
+                                <input type="time" name="horarioInicio" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Hora fin</label>
+                                <input type="time" name="horarioFin" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-urbanfit">Añadir Horario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modales editar horario -->
+    <div th:each="c : ${clases}">
+        <div th:each="h : ${horariosPorClase[c.id]}">
+            <div class="modal fade" th:id="'modalEditarHorario' + ${h.id}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar Horario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form th:action="@{/admin/clases/{cid}/horarios/{hid}/editar(cid=${c.id},hid=${h.id})}" method="post">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Día de la semana</label>
+                                    <select name="diaSemana" class="form-select" required>
+                                        <option value="Lunes" th:selected="${h.diaSemana == 'Lunes'}">Lunes</option>
+                                        <option value="Martes" th:selected="${h.diaSemana == 'Martes'}">Martes</option>
+                                        <option value="Miércoles" th:selected="${h.diaSemana == 'Miércoles'}">Miércoles</option>
+                                        <option value="Jueves" th:selected="${h.diaSemana == 'Jueves'}">Jueves</option>
+                                        <option value="Viernes" th:selected="${h.diaSemana == 'Viernes'}">Viernes</option>
+                                        <option value="Sábado" th:selected="${h.diaSemana == 'Sábado'}">Sábado</option>
+                                        <option value="Domingo" th:selected="${h.diaSemana == 'Domingo'}">Domingo</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Hora inicio</label>
+                                    <input type="time" name="horarioInicio" class="form-control"
+                                           th:value="${#temporals.format(h.horarioInicio,'HH:mm')}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Hora fin</label>
+                                    <input type="time" name="horarioFin" class="form-control"
+                                           th:value="${#temporals.format(h.horarioFin,'HH:mm')}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-urbanfit">Guardar cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

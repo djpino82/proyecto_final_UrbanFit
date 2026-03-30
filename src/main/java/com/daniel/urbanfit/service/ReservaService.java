@@ -112,10 +112,62 @@ public class ReservaService {
 
 	// Obtener historial de clases canceladas o no asistidas
 	public List<Reserva> obtenerClasesNoAsistidasOCanceladas(Long usuarioId) {
-	    return reservaRepository.findByUsuarioIdAndActivaAndAsistenciaConfirmadaOrderByFechaClaseDesc(usuarioId, false, false);
+	    return reservaRepository.obtenerClasesCanceladasONoAsistidas(usuarioId);
 	}
 
+	
+	 /**
+     * Obtener todas las reservas activas de una clase específica
+     * Se usa para que el monitor vea sus alumnos inscritos
+     */
+    public List<Reserva> obtenerReservasActivasPorClase(Long claseId) {
+        return reservaRepository.findByHorario_Clase_IdAndActivaTrue(claseId);
+    }
 
+	// Método para marcar asistencia de un alumno
+    public void confirmarAsistencia(Long reservaId) {
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        // Marcar asistencia como true
+        reserva.setAsistenciaConfirmada(true);
+
+        // Guardamos en la base de datos
+        reservaRepository.save(reserva);
+    }
+    
+    /*
+     * Devuelve el número total de alumnos activos
+     * inscritos en una clase concreta.
+     * 
+     * Se utiliza en el dashboard del monitor para mostrar:
+     *      02 / 14
+     */
+    public Long contarReservasActivasPorClase(Long claseId) {
+        return reservaRepository.countByHorarioClaseIdAndActivaTrue(claseId);
+    }
+    
+    
+    public List<Reserva> obtenerAgendaMonitor(Long monitorId) {
+        return reservaRepository.findReservasPorMonitor(monitorId);
+    }
+
+    public Long contarAlumnosPorSesion(Long horarioId, LocalDate fecha) {
+        return reservaRepository.countByHorarioIdAndFechaClaseAndActivaTrue(horarioId, fecha);
+    }
+    
+    public List<Reserva> obtenerReservasPorClaseYFecha(Long claseId, LocalDate fecha) {
+        return reservaRepository.findByHorario_Clase_IdAndFechaClaseAndActivaTrue(claseId, fecha);
+    }
+    
+    public void marcarAsistencia(Long reservaId, boolean asistio) {
+        Reserva reserva = reservaRepository.findById(reservaId)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        reserva.setAsistenciaConfirmada(asistio);
+        reservaRepository.save(reserva);
+    }
+    
 	
 
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100..900&family=Montserrat:wght@100..900&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+
+    <title>Dashboard Monitor</title>
+</head>
+
+<body class="pagina-dashboard">
+
+    <nav class="navbar navbar-expand-sm nav-bg py-2">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/logo_UrbanFit.png}" alt="Logo UrbanFit" width="75" height="75" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1">
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar d-flex flex-column min-vh-100">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" th:classappend="${seccion=='perfil'} ? 'active'" th:href="@{/monitor/dashboard}">Mi Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:classappend="${seccion=='clases' or seccion=='alumnos'} ? 'active'" th:href="@{/monitor/clases}">Clases Asignadas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" th:href="@{/logout}">Cerrar Sesión</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <h1 class="h2 mt-4">Panel De Monitor</h1>
+                    <p class="lead">Aquí podrás gestionar tu perfil y consultar tus clases asignadas.</p>
+
+                    <div th:if="${seccion=='perfil'}">
+                        <div th:replace="~{fragments/_perfil :: contenidoPerfil}"></div>
+                    </div>
+
+                    <div th:if="${seccion=='clases'}">
+                        <div th:replace="~{fragments/_clasesAsignadas :: clasesAsignadas}"></div>
+                    </div>
+
+                    <div th:if="${seccion=='alumnos'}">
+                        <div th:replace="~{fragments/_alumnosInscritos :: alumnosInscritosFragment}"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-footer text-light py-2 mt-auto">
+        <div class="container text-center">
+            <p class="mb-1">© 2025 UrbanFit. Todos los derechos reservados.</p>
+            <div class="small">
+                <a href="#" class="text-light text-decoration-none me-3">Aviso Legal</a>
+                <a href="#" class="text-light text-decoration-none me-3">Política de Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
