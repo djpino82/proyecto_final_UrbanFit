@@ -119,7 +119,9 @@ public class DashboardAdministradorController {
         return "redirect:/admin/clases";
     }
     
-    // CLASES HORARIOS
+    // =========================================================
+    // SECCIÓN: CLASES HORARIOS
+    // =========================================================
     
     @PostMapping("/clases/{id}/horarios")
     public String crearHorario(@PathVariable Long id, @ModelAttribute Horario horario) {
@@ -144,21 +146,7 @@ public class DashboardAdministradorController {
         horarioService.eliminarHorario(horarioId);
         return "redirect:/admin/clases";
     }
-    
-    @PostMapping("/usuarios/{id}/eliminar")
-    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            usuarioService.eliminarUsuario(id);
-            redirectAttributes.addFlashAttribute("mensaje", "Usuario eliminado correctamente");
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar usuario: " + e.getMessage());
-        }
-        return "redirect:/admin/usuarios";
-    }
-    
-    
+     
 
 
     // =========================================================
@@ -213,6 +201,20 @@ public class DashboardAdministradorController {
 
         return "redirect:/admin/usuarios";
     }
+    
+    @PostMapping("/usuarios/{id}/eliminar")
+    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.eliminarUsuario(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Usuario eliminado correctamente");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar usuario: " + e.getMessage());
+        }
+        return "redirect:/admin/usuarios";
+    }
+    
 
     // =========================================================
     // SECCIÓN: MONITORES
@@ -264,16 +266,7 @@ public class DashboardAdministradorController {
     }
 
 
-    // =========================================================
-    // LOGOUT
-    // =========================================================
-
-    @GetMapping("/logout")
-    public String logout() {
-        // Aquí irá la lógica de Spring Security cuando la integres
-        return "redirect:/";
-    }
-
+  
 
 	
 }
