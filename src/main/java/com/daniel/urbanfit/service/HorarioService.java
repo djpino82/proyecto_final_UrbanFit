@@ -38,7 +38,7 @@ public class HorarioService {
 	public List<Horario> obtenerPorDiaSemana(LocalDate fecha) {
 		DayOfWeek diaJava = fecha.getDayOfWeek();
 		DiaSemana diaEnum = convertirDiaSemana(diaJava);
-		return horarioRepository.findByDiaSemana(diaEnum);
+		return horarioRepository.findByDiaSemanaOrderByHorarioInicioAsc(diaEnum);
 	}
 	
 	private DiaSemana convertirDiaSemana (DayOfWeek diaJava) {

@@ -12,7 +12,7 @@ import com.daniel.urbanfit.entity.Horario;
 public interface HorarioRepository extends JpaRepository<Horario, Long> {
 	
 	// Busca todos los horarios que corresponden a un día de la semana específico.
-	List<Horario> findByDiaSemana(DiaSemana diaSemana);
+	List<Horario> findByDiaSemanaOrderByHorarioInicioAsc(DiaSemana diaSemana);
 	
 	// Trae todos los horarios de una clase por su id
     List<Horario> findByClaseId(Long claseId);

@@ -46,7 +46,12 @@ public class ReservaService {
 		Horario horario = horarioRepository.findById(horarioId).orElseThrow(() -> new IllegalArgumentException("Horario no encontrado"));
 		
 		// Comprobar si ya tien reserva para essa fecha y horario
-		boolean existe = reservaRepository.existsByUsuarioAndHorarioAndFechaClase(usuario, horario, fechaclase);
+		boolean existe = reservaRepository
+			    .existsByUsuarioIdAndHorarioIdAndFechaClaseAndActivaTrue(
+			        usuarioId,
+			        horarioId,
+			        fechaclase
+			    );
 		
 		if (existe) {
 			throw new IllegalArgumentException("Ya tienes reserva para este dia y hora");

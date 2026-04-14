@@ -42,6 +42,7 @@ public class DashboardMonitorController {
         Usuario monitor = usuarioService.obtenerUsuarioPorEmail(principal.getName());
         model.addAttribute("usuario", monitor);
         model.addAttribute("usuarioNombre", usuarioService.capitalizarNombreCompleto(monitor.getNombre(), monitor.getApellidos()));
+        model.addAttribute("esMonitor", true);
         model.addAttribute("seccion", "perfil"); // Sección inicial
         return "dashboardMonitor";
     }

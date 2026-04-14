@@ -2,6 +2,7 @@ package com.daniel.urbanfit.controller;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +158,12 @@ public class DashboardClienteController {
 		// Obtenemos el usuario logueago
 		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(emailUsuario);
 		
+		// Validación usuario activ
+		if(!usuario.isEstado()) {
+			redirectAttributes.addFlashAttribute("error", "Pase por recepción para activar el servicio.");
+		    return "redirect:/cliente/reservas";
+		}
+		
 		// Pasamos la fecha de la reserva que está en String a Localdate
 		LocalDate fecha = LocalDate.parse(fechaClase);
 		
@@ -169,6 +176,16 @@ public class DashboardClienteController {
             redirectAttributes.addFlashAttribute("error", "Operación no permitida: Solo se puede reservar a una semana vista.");
             return "redirect:/cliente/reservas";
         }
+        
+        // validación para no reservar el mismo día una hora ya pasada
+        Horario horario = horarioService.obtenerPorId(horarioId);
+        
+        LocalDateTime fechaHoraClase = LocalDateTime.of(fecha,  horario.getHorarioInicio());
+        LocalDateTime ahora = LocalDateTime.now();
+        if (fechaHoraClase.isBefore(ahora)) {
+        	redirectAttributes.addFlashAttribute("error", "Esta clase ya ha pasado y no puede reservarse.");
+            return "redirect:/cliente/reservas";
+        }
 		
 		try {
 			
@@ -179,7 +196,8 @@ public class DashboardClienteController {
 			redirectAttributes.addFlashAttribute("mensaje", "Reserva realizada correctamente");
 			
 		} catch (Exception e) {
-			redirectAttributes.addFlashAttribute("error", "No se ha podido completar la reserva. Inténtalo de nuevo.");
+			e.printStackTrace(); 
+			redirectAttributes.addFlashAttribute("error", "Ya tiene reserva para ese día.");
 		}
 		
 		return "redirect:/cliente/reservas";

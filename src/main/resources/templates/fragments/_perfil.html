@@ -17,7 +17,8 @@
     <!-- Mensaje de actualización por ejemplo perfil actualizado correctamente -->
     <div th:if="${mensaje}" id="mensajeExito" class="alert alert-success" th:text="${mensaje}"></div>
 
-    <form th:action="@{/cliente/perfil}" th:object="${usuario}" method="post" class="row g-3">
+    <form th:action="${esMonitor ? '/monitor/perfil' : '/cliente/perfil'}"
+      th:object="${usuario}" method="post" class="row g-3">
 
         <!-- Nombre -->
         <div class="col-md-6">

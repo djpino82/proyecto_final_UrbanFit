@@ -71,6 +71,12 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     // 2. La fecha exacta de la sesión (para que no salgan alumnos de otros días)
     // 3. Que la reserva esté activa (no cancelada)
     List<Reserva> findByHorario_Clase_IdAndFechaClaseAndActivaTrue(Long claseId, LocalDate fecha);
+    
+    boolean existsByUsuarioIdAndHorarioIdAndFechaClaseAndActivaTrue(
+    	    Long usuarioId,
+    	    Long horarioId,
+    	    LocalDate fechaClase
+    	);
 	
 	
 }
