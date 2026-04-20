@@ -72,7 +72,6 @@ El proyecto sigue el patrón MVC (Modelo-Vista-Controlador) con una clara separa
 - **horarios**: Día de la semana, hora de inicio y fin (relacionado con una clase).
 - **reservas**: Relaciona usuario + horario, estado (activa/cancelada) y asistencia confirmada.
 
-_Nota: Incluir aquí el diagrama de la base de datos si se dispone de él._
 
 **7\. INSTALACIÓN Y CONFIGURACIÓN**
 
