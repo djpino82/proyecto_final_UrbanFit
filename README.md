@@ -1,5 +1,3 @@
-**URBANFIT - README DEL PROYECTO**
-
 **1\. TÍTULO DEL PROYECTO**
 
 **UrbanFit - Aplicación Web para la Gestión de Clases de Gimnasio**
