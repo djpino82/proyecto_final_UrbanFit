@@ -29,7 +29,6 @@ UrbanFit es una aplicación web completa para la gestión y reserva de clases en
 - Gestionar usuarios (CRUD, cambio de roles, activar/desactivar).
 - Gestionar tipos de clases y clases (CRUD).
 - Asignar monitores y horarios a cada clase.
-- Consultar estadísticas y generar informes simples.
 - Activar cuentas de clientes tras pago presencial.
 
 **3.4. Visitante (no registrado)**
