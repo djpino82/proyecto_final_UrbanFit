@@ -59,6 +59,7 @@ public class DashboardClienteController {
         // Indicamos la sección que queremos mostrar en el dashboard
         // Esto es útil si más adelante usamos el mismo dashboard para Clases, Reservas, Historial
         model.addAttribute("seccion", "perfil");
+        model.addAttribute("esMonitor", false);
 
         // Retornamos la plantilla Thymeleaf principal
         return "dashboardCliente"; // Thymeleaf buscará dashboardCliente.html
@@ -143,6 +144,7 @@ public class DashboardClienteController {
 		
 		// Indicamos sección activa
 		model.addAttribute("seccion", "reservas"); // reservas se pone en el th:case="reservas" del fragmento de html
+		model.addAttribute("esMonitor", false);
 		
 		return "dashboardCliente";
 		
@@ -221,6 +223,7 @@ public class DashboardClienteController {
 	    model.addAttribute("usuarioNombre", usuario.getNombre());
 	    model.addAttribute("reservas", reservasFuturas);
 	    model.addAttribute("seccion", "misReservas"); // <--- Clave para el switch y el sidebar active
+	    model.addAttribute("esMonitor", false);
 	    
 	    return "dashboardCliente";
 	}
@@ -266,6 +269,7 @@ public class DashboardClienteController {
 		
 		// sección
 		model.addAttribute("seccion", "historial");
+		model.addAttribute("esMonitor", false);
 		
 		return "dashboardCliente";
 	}

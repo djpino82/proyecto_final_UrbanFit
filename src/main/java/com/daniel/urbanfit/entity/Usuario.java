@@ -74,6 +74,7 @@ public class Usuario {
 	private boolean estado = false;
 	
 	@Column(name = "fecha_pago")
+	@DateTimeFormat(pattern = "yyyy-MM-dd") 
 	private LocalDate fechaPago;
 	
 	@Column(name = "fecha_registro", updatable = false) // updatable no actualiza la tabla porque tiene Current_Timestamp y no cambia nunca.
