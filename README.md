@@ -1,16 +1,16 @@
-# 🚀 UrbanFit – Sistema de Gestión de Gimnasio
+# UrbanFit – Sistema de Gestión de Gimnasio
 
 Aplicación web full stack para la gestión de reservas de clases en un gimnasio.
 
 El sistema permite a los clientes reservar y cancelar clases, a los monitores gestionar la asistencia y a los administradores controlar usuarios, clases y horarios.
 
   
-# 🎥 Demo del proyecto
+# Demo del proyecto
 
 Solicitar por privado
   
 
-# 🧰 Tecnologías utilizadas
+# Tecnologías utilizadas
 
 -   Java 21
 -   Spring Boot
